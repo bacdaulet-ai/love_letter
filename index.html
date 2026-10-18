@@ -75,6 +75,14 @@
     .volume-slider { width:75px; height:4px; cursor:pointer; }
     .player-footnote { color:#9a908a; font-size:13px; margin:15px 0 0; text-align:center; }
     .final-mark { text-align:center; color:#b4a49c; font:700 24px var(--font-script); margin:70px auto 0; }
+
+    .autoplay-nudge { position:fixed; z-index:20; left:50%; bottom:max(22px, env(safe-area-inset-bottom)); transform:translateX(-50%); width:max-content; max-width:calc(100vw - 32px); background:rgba(252,249,245,.97); border:1px solid #ded1c7; border-radius:100px; padding:9px 12px 9px 19px; box-shadow:0 12px 42px rgba(46,37,30,.19); display:flex; align-items:center; gap:14px; animation: fade-in .3s ease-out; }
+    .autoplay-nudge[hidden] { display:none !important; }
+    .autoplay-nudge-text { font-size:13px; color:#685b55; line-height:1.3; }
+    .start-music-btn { border:0; white-space:nowrap; background:var(--ink); color:white; border-radius:100px; padding:12px 17px; font:600 13px var(--font-letter); cursor:pointer; }
+    .start-music-btn:hover { background:#645149; }
+    .start-music-btn:focus-visible { outline:3px solid #b79086; outline-offset:3px; }
+    @media (max-width:480px) { .autoplay-nudge { gap:9px; padding:9px 9px 9px 12px; } .autoplay-nudge-text { font-size:12px; } .start-music-btn { padding:11px 12px; font-size:12px; } }
     audio { display:none; }
     @media (max-width: 950px) and (min-width: 681px) {
       .paper { padding-inline: 44px; }
@@ -87,8 +95,8 @@
     @media (max-width: 680px) {
       .paper { padding:22px 24px 65px; }
       .hero { height:456px; }
-      .heart-sketch { width:82px; height:82px; top:0; left:15px; transform:rotate(-10deg); }
-      .photos { width:370px; height:345px; left:50%; right:auto; top:87px; transform:translateX(-50%) scale(.87); transform-origin:top center; }
+      .heart-sketch { width:97px; height:97px; top:10px; left:12px; transform:rotate(-10deg); }
+      .photos { width:370px; height:345px; left:50%; right:auto; top:65px; transform:translateX(-50%) scale(.87); transform-origin:top center; }
       .polaroid-back { width:193px; height:295px; left:8px; top:21px; padding:9px 9px 0; padding-bottom:55px; }
       .polaroid-front { width:243px; height:300px; left:135px; top:8px; padding:9px 9px 0; padding-bottom:58px; }
       .greeting { left:0; top:auto; bottom:0; font-size:clamp(37px, 10vw, 45px); letter-spacing:-.04em; white-space:normal; }
@@ -123,7 +131,7 @@
     @media print {
       .paper { padding:30px 55px; }
       .hero { height:420px; }
-      .music-area, .final-mark { display:none; }
+      .music-area, .final-mark, .autoplay-nudge { display:none; }
       .letter { font-size:20px; }
       .signature { margin-top:45px; }
       body { background:white; }
@@ -165,7 +173,7 @@
           <div class="album-art" aria-hidden="true">
             <svg viewBox="0 0 40 40"><path d="M19 32c-6-5-13-11-13-18a7 7 0 0 1 13-4 7 7 0 0 1 13 4c0 7-7 13-13 18z"/></svg>
           </div>
-          <div class="track-meta"><span class="track-title" id="track-title">Always, Us</span><span class="track-description" id="track-description">An original piano melody</span></div>
+          <div class="track-meta"><span class="track-title" id="track-title">Wonderful Tonight</span><span class="track-description" id="track-description">Eric Clapton · Our song ♡</span></div>
           <button class="play-btn" id="play-btn" type="button" aria-label="Play music" title="Play or pause">
             <svg class="play-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z" stroke="none"/></svg>
             <svg class="pause-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z" stroke="none"/></svg>
@@ -177,7 +185,7 @@
           <span class="time" id="duration">0:00</span>
         </div>
         <div class="player-bottom">
-          <label class="replace-song" for="song-file">Choose your own song ♡</label>
+          <label class="replace-song" for="song-file">Change song ♡</label>
           <input id="song-file" type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg" hidden />
           <div class="volume-controls">
             <button class="volume-btn" id="mute-btn" aria-label="Mute audio" title="Mute or unmute">
@@ -187,11 +195,16 @@
           </div>
         </div>
       </div>
-      <audio id="audio" preload="metadata" src="assets/always-us.mp3"></audio>
-      <p class="player-footnote">Tap play to listen. You can swap in any favorite song from your device.</p>
+      <audio id="audio" preload="auto" autoplay src="assets/wonderful-tonight.mp3"></audio>
+      <p class="player-footnote">Our song will start automatically if your browser allows it. ♡</p>
     </section>
     <p class="final-mark" aria-hidden="true">♡</p>
   </main>
+
+  <div class="autoplay-nudge" id="autoplay-nudge" role="status" hidden>
+    <span class="autoplay-nudge-text">A song for you ♡</span>
+    <button class="start-music-btn" id="start-music" type="button">♫ Play our song</button>
+  </div>
   <script>
     (() => {
       const audio = document.getElementById('audio');
@@ -204,6 +217,9 @@
       const description = document.getElementById('track-description');
       const volume = document.getElementById('volume-slider');
       const mute = document.getElementById('mute-btn');
+      const nudge = document.getElementById('autoplay-nudge');
+      const startMusicButton = document.getElementById('start-music');
+      let waitingForFirstGesture = false;
       let localAudioURL = null;
       const formatTime = s => Number.isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '0:00';
       const showPlayState = () => {
@@ -211,13 +227,37 @@
         playButton.classList.toggle('is-playing', playing);
         playButton.setAttribute('aria-label', playing ? 'Pause music' : 'Play music');
       };
-      playButton.addEventListener('click', async () => {
-        if (!audio.paused) { audio.pause(); return; }
-        try { await audio.play(); } catch (e) {
-          description.textContent = 'Unable to play this audio file';
+      // Browsers may block unmuted autoplay until the visitor interacts with the page.
+      // Try it on load, but provide a clearly accessible one-tap fallback if blocked.
+      const requestPlayback = () => {
+        const result = audio.play();
+        if (result && typeof result.then === 'function') {
+          result.then(() => {
+            waitingForFirstGesture = false;
+            nudge.hidden = true;
+          }).catch(error => {
+            if (error.name === 'NotAllowedError') {
+              waitingForFirstGesture = true;
+              nudge.hidden = false;
+            } else if (error.name !== 'AbortError') {
+              description.textContent = 'Unable to play this audio file';
+            }
+          });
         }
+      };
+      playButton.addEventListener('click', () => {
+        if (!audio.paused) { audio.pause(); return; }
+        requestPlayback();
       });
-      audio.addEventListener('play', showPlayState);
+      startMusicButton.addEventListener('click', requestPlayback);
+      const startOnFirstInteraction = event => {
+        if (!waitingForFirstGesture || !audio.paused) return;
+        // Don't interfere with playback buttons or with input controls.
+        if (event.target.closest('button, input, label')) return;
+        requestPlayback();
+      };
+      document.addEventListener('pointerdown', startOnFirstInteraction, {capture:true});
+      audio.addEventListener('play', () => { waitingForFirstGesture = false; nudge.hidden = true; showPlayState(); });
       audio.addEventListener('pause', showPlayState);
       audio.addEventListener('ended', showPlayState);
       audio.addEventListener('loadedmetadata', () => { duration.textContent = formatTime(audio.duration); });
@@ -236,6 +276,8 @@
         const file = upload.files && upload.files[0];
         if (!file) return;
         audio.pause();
+        nudge.hidden = true;
+        waitingForFirstGesture = false;
         if (localAudioURL) URL.revokeObjectURL(localAudioURL);
         localAudioURL = URL.createObjectURL(file);
         audio.src = localAudioURL;
@@ -247,7 +289,7 @@
         time.textContent = '0:00';
         duration.textContent = '0:00';
         showPlayState();
-        try { await audio.play(); } catch (e) { /* If blocked, user can press play. */ }
+        requestPlayback();
       });
       audio.volume = Number(volume.value);
       volume.addEventListener('input', () => {
@@ -262,6 +304,7 @@
       mute.addEventListener('click', () => { audio.muted = !audio.muted; updateMute(); });
       audio.addEventListener('error', () => { description.textContent = 'This song could not be opened'; });
       updateMute();
+      requestPlayback();
     })();
   </script>
 </body>
