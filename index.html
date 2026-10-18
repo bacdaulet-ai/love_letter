@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#fcf9f5" />
+  <meta name="description" content="A little love letter, for Alikseniia." />
+  <title>For Alikseniia, with love ♡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #fcf9f5;
+      --ink: #302f2c;
+      --muted: #827972;
+      --soft-line: #e5ded5;
+      --accent: #9e786f;
+      --font-letter: 'Josefin Sans', 'Gill Sans', 'Trebuchet MS', sans-serif;
+      --font-script: 'Dancing Script', 'Apple Chancery', 'URW Chancery L', 'Z003', 'Brush Script MT', 'Segoe Script', cursive;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-letter); -webkit-font-smoothing: antialiased; }
+    .paper { max-width: 1088px; padding: 52px 88px 80px; margin: 0 auto; }
+    .hero { height: 438px; position: relative; isolation: isolate; }
+    .heart-sketch { position: absolute; left: 130px; top: 85px; width: 170px; height: 170px; overflow: visible; transform: rotate(-8deg); }
+    .heart-sketch path { fill: none; stroke: #302f2c; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+    .greeting { position: absolute; top: 306px; left: 53px; margin: 0; font: 700 55px/1.15 var(--font-script); letter-spacing: -.03em; z-index: 4; white-space: nowrap; }
+    .photos { position: absolute; right: 38px; top: 0; width: 490px; height: 425px; }
+    .polaroid { position: absolute; background: #f5f5f1; padding: 12px 12px 0; border: 1px solid rgba(62, 61, 58, .10); box-shadow: 0 4px 15px rgba(33,30,25,.035); transition: transform .4s ease, box-shadow .4s ease; }
+    .polaroid img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+    .polaroid-back { width: 238px; height: 355px; left: 9px; top: 45px; padding-bottom: 73px; transform: rotate(-3.1deg); z-index: 1; }
+    .polaroid-front { width: 316px; height: 377px; left: 132px; top: 15px; padding-bottom: 72px; transform: rotate(10.2deg); z-index: 2; }
+    .polaroid-front img { object-position: 53% center; }
+    .polaroid-back img { object-position: center 38%; }
+    .polaroid-front:hover { transform: rotate(7deg) translateY(-5px); box-shadow: 0 12px 30px rgba(33,30,25,.13); }
+    .polaroid-back:hover { transform: rotate(-6deg) translateY(-5px); box-shadow: 0 12px 30px rgba(33,30,25,.10); }
+    .letter { max-width: 797px; margin: 8px auto 0; font: 400 27px/1.79 var(--font-letter); letter-spacing: -.018em; }
+    .letter p { margin: 0 0 45px; }
+    .signature { margin: 117px auto 0; text-align: center; font-family: var(--font-script); font-weight: 700; letter-spacing: -.028em; }
+    .signature p { margin: 0; font-size: 58px; line-height: 1.4; }
+    .signature .name { margin-top: 12px; font-size: 62px; }
+    .music-area { max-width: 640px; margin: 105px auto 0; text-align: center; }
+    .divider-heart { display:flex; align-items:center; justify-content:center; gap:18px; color:#b7a69c; font-family:var(--font-script); font-size:30px; margin-bottom:20px; }
+    .divider-heart::before, .divider-heart::after { content:""; display:block; width:88px; height:1px; background:#ddd4cd; }
+    .music-heading { font: 700 36px/1.2 var(--font-script); margin:0 0 9px; }
+    .music-note { margin:0 0 26px; font-size: 16px; color:var(--muted); letter-spacing:.02em; }
+    .player { background:rgba(255,255,255,.63); border:1px solid var(--soft-line); border-radius:22px; padding:23px 24px 21px; box-shadow:0 10px 42px rgba(64,49,36,.035); text-align:left; }
+    .player-top { display:flex; align-items:center; gap:18px; }
+    .album-art { flex:0 0 63px; width:63px; height:63px; border-radius:15px; background:linear-gradient(135deg,#ead5cd,#f8ede7 55%,#e8d7cb); display:flex; align-items:center; justify-content:center; }
+    .album-art svg { width:32px; height:32px; fill:none; stroke:#946f66; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .track-meta { flex:1; min-width:0; }
+    .track-title { display:block; font-size:19px; font-weight:600; letter-spacing:-.015em; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .track-description { display:block; margin-top:6px; color:var(--muted); font-size:14px; }
+    .play-btn { appearance:none; flex:0 0 54px; height:54px; width:54px; border:0; border-radius:50%; color:white; background:var(--ink); display:grid; place-items:center; cursor:pointer; transition:transform .2s ease, background .2s ease; }
+    .play-btn:hover { background:#645149; transform:scale(1.055); }
+    .play-btn:focus-visible, .replace-song:focus-visible, .volume-btn:focus-visible, .timeline:focus-visible, .volume-slider:focus-visible { outline:3px solid #b79086; outline-offset:4px; }
+    .play-btn svg { fill:currentColor; stroke:currentColor; width:22px; height:22px; }
+    .play-btn .pause-symbol { display:none; }
+    .play-btn.is-playing .play-symbol { display:none; }
+    .play-btn.is-playing .pause-symbol { display:block; }
+    .timeline-row { margin-top:19px; display:flex; gap:12px; align-items:center; }
+    .time { font:400 13px/1 var(--font-letter); color:#8b837e; min-width:33px; text-align:center; font-variant-numeric:tabular-nums; }
+    input[type=range] { accent-color:#a47f73; }
+    .timeline { flex:1; width:100%; height:6px; margin:0; cursor:pointer; appearance:none; border-radius:99px; background:linear-gradient(to right, #94776c 0 var(--progress,0%), #e5dbd5 var(--progress,0%) 100%); }
+    .timeline::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:13px; height:13px; border:3px solid white; border-radius:50%; background:#94776c; box-shadow:0 0 0 1px #ad8a7e; }
+    .timeline::-moz-range-thumb { width:10px; height:10px; border:2px solid white; border-radius:50%; background:#94776c; }
+    .player-bottom { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid #f0e9e4; }
+    .replace-song { appearance:none; border:0; background:transparent; padding:7px 0; color:#896b61; font:500 14px var(--font-letter); cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+    .replace-song:hover { color:#4d3d37; }
+    .volume-controls { display:flex; align-items:center; gap:8px; }
+    .volume-btn { appearance:none; display:grid; place-items:center; border:0; background:transparent; cursor:pointer; padding:5px; color:#867871; }
+    .volume-btn svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .volume-slider { width:75px; height:4px; cursor:pointer; }
+    .player-footnote { color:#9a908a; font-size:13px; margin:15px 0 0; text-align:center; }
+    .final-mark { text-align:center; color:#b4a49c; font:700 24px var(--font-script); margin:70px auto 0; }
+    audio { display:none; }
+    @media (max-width: 950px) and (min-width: 681px) {
+      .paper { padding-inline: 44px; }
+      .photos { right:-4px; transform:scale(.82); transform-origin:top right; }
+      .heart-sketch { left:68px; top:104px; width:140px; }
+      .greeting { left:8px; font-size:47px; }
+      .letter { font-size:25px; }
+      .signature p { font-size:49px; }
+    }
+    @media (max-width: 680px) {
+      .paper { padding:22px 24px 65px; }
+      .hero { height:456px; }
+      .heart-sketch { width:82px; height:82px; top:0; left:15px; transform:rotate(-10deg); }
+      .photos { width:370px; height:345px; left:50%; right:auto; top:87px; transform:translateX(-50%) scale(.87); transform-origin:top center; }
+      .polaroid-back { width:193px; height:295px; left:8px; top:21px; padding:9px 9px 0; padding-bottom:55px; }
+      .polaroid-front { width:243px; height:300px; left:135px; top:8px; padding:9px 9px 0; padding-bottom:58px; }
+      .greeting { left:0; top:auto; bottom:0; font-size:clamp(37px, 10vw, 45px); letter-spacing:-.04em; white-space:normal; }
+      .letter { margin-top:29px; font-size:19.5px; line-height:1.7; letter-spacing:-.023em; }
+      .letter p { margin-bottom:32px; }
+      .signature { margin-top:79px; }
+      .signature p { font-size:clamp(34px, 9vw, 47px); line-height:1.4; }
+      .signature .name { font-size:49px; margin-top:4px; }
+      .music-area { margin-top:78px; }
+      .music-heading { font-size:33px; }
+      .music-note { font-size:15px; }
+      .player { padding:18px 16px; border-radius:18px; }
+      .album-art { flex-basis:52px; width:52px; height:52px; border-radius:12px; }
+      .track-title { font-size:16px; }
+      .track-description { font-size:12px; }
+      .play-btn { flex-basis:48px; width:48px; height:48px; }
+    }
+    @media (max-width: 370px) {
+      .paper { padding-inline:19px; }
+      .photos { transform:translateX(-50%) scale(.78); }
+      .greeting { font-size:35px; }
+      .letter { font-size:18px; }
+      .signature p { font-size:32px; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .hero { animation: fade-in .7s ease-out both; }
+      .letter { animation: rise-in 1s .18s ease-out both; }
+      .signature { animation: rise-in 1s .3s ease-out both; }
+      @keyframes fade-in { from { opacity:0; } to { opacity:1; } }
+      @keyframes rise-in { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    }
+    @media print {
+      .paper { padding:30px 55px; }
+      .hero { height:420px; }
+      .music-area, .final-mark { display:none; }
+      .letter { font-size:20px; }
+      .signature { margin-top:45px; }
+      body { background:white; }
+    }
+  </style>
+</head>
+<body>
+  <main class="paper">
+    <section class="hero" aria-label="Our memories">
+      <svg class="heart-sketch" viewBox="0 0 180 180" role="img" aria-label="Hand-drawn heart">
+        <path d="M93 158 C70 131 28 95 27 54 C26 30 39 15 58 17 C80 18 91 50 95 84 C107 59 125 43 149 46 C169 49 168 70 155 90 C137 117 110 143 93 158 Z" />
+        <path d="M90 83 C83 40 63 17 48 20 C27 25 29 56 39 78" />
+        <path d="M95 85 C107 44 137 39 151 50" />
+        <path d="M91 157 C75 136 48 101 39 78" />
+      </svg>
+      <div class="photos">
+        <div class="polaroid polaroid-back"><img src="assets/mirror.jpg" alt="A warm mirror photograph of the two of us together" width="1350" height="1800" /></div>
+        <div class="polaroid polaroid-front"><img src="assets/outdoors.jpg" alt="A close selfie of us together under green trees" width="1800" height="1350" /></div>
+      </div>
+      <h1 class="greeting">Dearest Alikseniia,</h1>
+    </section>
+
+    <article class="letter" aria-label="My love letter">
+      <p>I still remember the day that I met you. I recall being mesmerized by your passion for life and energy. And even though it has been over three years since our first kiss, I still remember that I could barely stand on my feet when our lips touched.</p>
+      <p>You inspire me to do great things in life and keep going despite setbacks and challenges. I love you so much and feel truly blessed that I get to share my journey with someone as supportive and caring as you.</p>
+    </article>
+
+    <footer class="signature">
+      <p>With all my love, now and forever,</p>
+      <p class="name">Bakdaulet</p>
+    </footer>
+
+    <section class="music-area" aria-labelledby="music-heading">
+      <div class="divider-heart" aria-hidden="true">♡</div>
+      <h2 id="music-heading" class="music-heading">A little song for us</h2>
+      <p class="music-note">A melody to hold this moment a little longer.</p>
+      <div class="player" role="group" aria-label="Music player">
+        <div class="player-top">
+          <div class="album-art" aria-hidden="true">
+            <svg viewBox="0 0 40 40"><path d="M19 32c-6-5-13-11-13-18a7 7 0 0 1 13-4 7 7 0 0 1 13 4c0 7-7 13-13 18z"/></svg>
+          </div>
+          <div class="track-meta"><span class="track-title" id="track-title">Always, Us</span><span class="track-description" id="track-description">An original piano melody</span></div>
+          <button class="play-btn" id="play-btn" type="button" aria-label="Play music" title="Play or pause">
+            <svg class="play-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z" stroke="none"/></svg>
+            <svg class="pause-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z" stroke="none"/></svg>
+          </button>
+        </div>
+        <div class="timeline-row">
+          <span class="time" id="current-time">0:00</span>
+          <input class="timeline" id="timeline" aria-label="Seek through song" type="range" min="0" max="1000" value="0" step="1" />
+          <span class="time" id="duration">0:00</span>
+        </div>
+        <div class="player-bottom">
+          <label class="replace-song" for="song-file">Choose your own song ♡</label>
+          <input id="song-file" type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg" hidden />
+          <div class="volume-controls">
+            <button class="volume-btn" id="mute-btn" aria-label="Mute audio" title="Mute or unmute">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="sound-wave" d="M17 9a5 5 0 0 1 0 6m2-9a9 9 0 0 1 0 12"/></svg>
+            </button>
+            <input class="volume-slider" id="volume-slider" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume" />
+          </div>
+        </div>
+      </div>
+      <audio id="audio" preload="metadata" src="assets/always-us.mp3"></audio>
+      <p class="player-footnote">Tap play to listen. You can swap in any favorite song from your device.</p>
+    </section>
+    <p class="final-mark" aria-hidden="true">♡</p>
+  </main>
+  <script>
+    (() => {
+      const audio = document.getElementById('audio');
+      const playButton = document.getElementById('play-btn');
+      const timeline = document.getElementById('timeline');
+      const time = document.getElementById('current-time');
+      const duration = document.getElementById('duration');
+      const upload = document.getElementById('song-file');
+      const title = document.getElementById('track-title');
+      const description = document.getElementById('track-description');
+      const volume = document.getElementById('volume-slider');
+      const mute = document.getElementById('mute-btn');
+      let localAudioURL = null;
+      const formatTime = s => Number.isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '0:00';
+      const showPlayState = () => {
+        const playing = !audio.paused && !audio.ended;
+        playButton.classList.toggle('is-playing', playing);
+        playButton.setAttribute('aria-label', playing ? 'Pause music' : 'Play music');
+      };
+      playButton.addEventListener('click', async () => {
+        if (!audio.paused) { audio.pause(); return; }
+        try { await audio.play(); } catch (e) {
+          description.textContent = 'Unable to play this audio file';
+        }
+      });
+      audio.addEventListener('play', showPlayState);
+      audio.addEventListener('pause', showPlayState);
+      audio.addEventListener('ended', showPlayState);
+      audio.addEventListener('loadedmetadata', () => { duration.textContent = formatTime(audio.duration); });
+      audio.addEventListener('timeupdate', () => {
+        time.textContent = formatTime(audio.currentTime);
+        const pct = audio.duration ? Math.min(100, audio.currentTime / audio.duration * 100) : 0;
+        timeline.value = String(Math.round(pct * 10));
+        timeline.style.setProperty('--progress', `${pct}%`);
+      });
+      timeline.addEventListener('input', () => {
+        const pct = Number(timeline.value) / 1000;
+        timeline.style.setProperty('--progress', `${pct * 100}%`);
+        if (audio.duration) audio.currentTime = pct * audio.duration;
+      });
+      upload.addEventListener('change', async () => {
+        const file = upload.files && upload.files[0];
+        if (!file) return;
+        audio.pause();
+        if (localAudioURL) URL.revokeObjectURL(localAudioURL);
+        localAudioURL = URL.createObjectURL(file);
+        audio.src = localAudioURL;
+        audio.load();
+        title.textContent = file.name.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ');
+        description.textContent = 'Your special song ♡';
+        timeline.value = '0';
+        timeline.style.setProperty('--progress', '0%');
+        time.textContent = '0:00';
+        duration.textContent = '0:00';
+        showPlayState();
+        try { await audio.play(); } catch (e) { /* If blocked, user can press play. */ }
+      });
+      audio.volume = Number(volume.value);
+      volume.addEventListener('input', () => {
+        audio.volume = Number(volume.value);
+        audio.muted = audio.volume === 0;
+        updateMute();
+      });
+      const updateMute = () => {
+        mute.setAttribute('aria-label', audio.muted ? 'Unmute audio' : 'Mute audio');
+        mute.querySelectorAll('.sound-wave').forEach(path => path.style.display = audio.muted ? 'none' : '');
+      };
+      mute.addEventListener('click', () => { audio.muted = !audio.muted; updateMute(); });
+      audio.addEventListener('error', () => { description.textContent = 'This song could not be opened'; });
+      updateMute();
+    })();
+  </script>
+</body>
+</html>
